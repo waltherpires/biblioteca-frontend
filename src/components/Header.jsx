@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Form } from "react-router";
+import { Link, Form } from "react-router-dom";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 
 export default function Header(){
@@ -19,7 +19,7 @@ export default function Header(){
     }
 
     return (
-        <header className="bg-[#F0F0F0] font-primary min-h-[40px]">
+        <header className="sitcky top-0  z-50 bg-[#F0F0F0] font-primary min-h-[10vh]">
             <nav className="mx-auto py-1 min-h-[10vh] flex justify-between items-center w-[92%] gap-4">
                 <div className="">
                     <p className=" bg-neutral-800 px-2 rounded text-4xl text-center font-logo"><a className="text-white">Biblioteca</a></p>
@@ -28,7 +28,7 @@ export default function Header(){
                     <ul className="flex md:flex-row flex-col md:items-center md:gap-[4vw] gap-8">
                         <li className="hover:text-gray-500 cursor-pointer" onClick={onToggleMenu}><Link to="/">Home</Link></li>
 
-                        <li className="hover:text-gray-500 cursor-pointer" onClick={onToggleMenu} ><Link to='/locais'>Livros</Link></li>
+                        <li className="hover:text-gray-500 cursor-pointer" onClick={onToggleMenu} ><Link to='/books'>Livros</Link></li>
                     </ul>
                 </div>
                 <div className="flex items-center gap-4">

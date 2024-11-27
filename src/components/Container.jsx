@@ -12,7 +12,9 @@ export default function Container({title, children, styleTitle = ""}){
         gap-1 
         justify-start 
         items-center 
-        rounded">
+        rounded
+        
+        ">
         {title && <h1 className={`md:text-6xl font-logo text-center font-bold text-white shadow-md mb-3 sm:mb-6 ${styleTitle}`}>{title}</h1>}
         {children}
       </div>
