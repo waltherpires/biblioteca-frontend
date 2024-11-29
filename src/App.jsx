@@ -11,7 +11,11 @@ import UserDetail, {
   loader as userDetailLoader,
   action as deleteUserAction
 } from './pages/UserDetail';
+import { action as manipulateUserAction } from './components/UserForm'; 
 
+
+import CreateBook from './pages/CreateBook';
+import { action as manipulateBookAction } from './components/BookForm';
 import Books, {loader as booksLoader} from './pages/Books';
 
 
@@ -27,7 +31,7 @@ const router = createBrowserRouter([
         path: 'users',
         children: [
           {index: true, element: <Users />, loader: usersLoader},
-          {path: 'new', element: <CreateAccount />},
+          {path: 'new', element: <CreateAccount />, action: manipulateUserAction},
           {
             path: ':userId',
             id: "user-detail",
@@ -41,7 +45,8 @@ const router = createBrowserRouter([
       {
         path: 'books',
         children: [
-          {index: true, element: <Books />, loader: booksLoader}
+          {index: true, element: <Books />, loader: booksLoader},
+          {path: 'new', element: <CreateBook />, action: manipulateBookAction}
         ]
       }
     ]

@@ -1,6 +1,8 @@
 import { 
   Form, 
   useNavigation, 
+  json,
+  redirect
 } from "react-router-dom"
 
 import Input from "./Input"
@@ -44,7 +46,7 @@ export default function UserForm({title , method, user }){
         <Input
           required
           label="Telefone"
-          name="phoneNumber" 
+          name="phone" 
           id="telefone" 
           placeholder="Digite seu telefone..."
           type="tel"
@@ -53,7 +55,7 @@ export default function UserForm({title , method, user }){
         />
 
         <div className="mt-2">
-          <label className="block text-xs sm:text-sm md:text-base mb-1 md:mb-2">Tipo de Usuário</label>
+          <label htmlFor="typeOfUser" className="block text-xs sm:text-sm md:text-base mb-1 md:mb-2">Tipo de Usuário</label>
           <select 
             name="typeOfUser" 
             className="border w-full text-xs sm:text-sm px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600"
@@ -74,4 +76,42 @@ export default function UserForm({title , method, user }){
         </div>
       </Form>
     )
+}
+
+export async function action({request, params}){
+  const method = request.method;
+  const data = await request.formData();
+
+  const userData = {
+    name: data.get('name'),
+    email: data.get('email'),
+    password: data.get('password'),
+    phone: data.get('phone'),
+  }
+
+  let url = 'http://localhost:8080/users';
+
+  let headers = {
+    'Content-Type' : 'application/json',
+  }
+
+  
+  const response = await fetch(url, {
+    method: method,
+    headers: headers,
+    body: JSON.stringify(userData)
+  });
+
+
+  if(response.status === 422){
+    return response;
+  }
+
+
+  if(!response.ok) {
+    throw json({message: "Não foi possível salvar o usuário"}, {status: 500})
+  }
+
+  return redirect('/')
+
 }

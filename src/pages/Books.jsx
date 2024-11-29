@@ -26,23 +26,24 @@ export default function Books() {
         <div className="flex items-center justify-center min-h-[calc(100vh-10vh)] pt-[10vh]">
             <BookTable data={data}>
                 <div className="bg-[#F0F0F0] p-4 rounded">
+                    <h2 className='text-center font-bold text-lg'>Ordenar Por:</h2>
                     <button
                         className="bg-[#1A1A1A] border-[#1A1A1A] border-2 hover:bg-transparent hover:text-black text-white p-3 mx-2 rounded"
                         onClick={() => handleClick('author')}
                     >
-                        Por Autor
+                        Autor
                     </button>
                     <button
                         className="bg-[#1A1A1A] border-[#1A1A1A] border-2 hover:bg-transparent hover:text-black text-white p-3 mx-2 rounded"
                         onClick={() => handleClick('title')}
                     >
-                        Por Título
+                        Título
                     </button>
                     <button
                         className="bg-[#1A1A1A] border-[#1A1A1A] border-2 hover:bg-transparent hover:text-black text-white p-3 mx-2 rounded"
                         onClick={() => handleClick('title-desc')}
                     >
-                        Por Título (DESC)
+                        Título (DESC)
                     </button>
                 </div>
             </BookTable>
