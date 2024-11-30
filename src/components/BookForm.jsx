@@ -2,6 +2,7 @@
 import { Form, json, redirect, useNavigate, useNavigation } from 'react-router-dom';
 
 import Input from './Input';
+import { globalLoader } from '../util/auth';
 
 export default function PlaceForm({title , method, book }){
     //title, author
@@ -43,13 +44,14 @@ export default function PlaceForm({title , method, book }){
 }
 
 export async function action({request, params}){
+    const { typeOfUser, token } = globalLoader();
     const method = request.method;
     const data = await request.formData();
     // const { token, typeOfUser } = globalLoader();
 
-    // if(typeOfUser !== "PROFESSOR" && typeOfUser !== "ADMINISTRADOR") {
-    //     throw json({message: "Tipo de usuário inválido para esta operação"}, {status: 500})
-    // }
+    if(typeOfUser !== "PROFESSOR" && typeOfUser !== "ADMINISTRADOR") {
+        throw json({message: "Tipo de usuário inválido para esta operação"}, {status: 500})
+    }
 
     const placeData = {
         title: data.get('title'),
@@ -58,11 +60,20 @@ export async function action({request, params}){
 
     let url = 'http://localhost:8080/books';
 
+    if(method === "PUT"){
+        const bookId = params.bookId;
+        if(!bookId){
+            throw json({ message: "ID do livro não encontrado"}, {status: 400});
+        }
+
+        url = 'http://localhost:8080/books/' + bookId;
+    }
+
     const response = await fetch(url, {
         method: method,
         headers: {
             'Content-Type' : 'application/json',
-            //'Authorization' : `Bearer ${token}`,
+            'Authorization' : `Bearer ${token}`,
         },
         body: JSON.stringify(placeData)
     })

@@ -60,7 +60,8 @@ async function fetchBooks(sortBy) {
     });
 
     if (!response.ok) {
-        throw json({ message: "Erro ao tentar obter livros" }, { status: 500 });
+        const error = await response.json();
+        throw new Error(error.message || "Erro ao tentar obter livro");
     }
 
     return response.json();

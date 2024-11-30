@@ -1,5 +1,8 @@
 import { useRouteLoaderData, json, Link, redirect, useSubmit } from "react-router-dom"
 
+import { getAuthToken } from '../util/auth';
+import { action as logoutAction } from '../pages/Logout';
+
 import Container from "../components/Container"
 
 export default function UserDetail(){
@@ -13,6 +16,11 @@ export default function UserDetail(){
             submit(null, {method: 'delete'});
         }
     }
+
+
+    const typeOfUserToLowerCase = 
+        data.typeOfUser === "ADMINISTRADOR" ? "Administrador" :
+            data.typeOfUser === "PROFESSOR" ? "Professor" :"Usuário";
 
     return (
 
@@ -37,6 +45,10 @@ export default function UserDetail(){
                         <div className="bg-[#F0F0F0] px-2 rounded">
                             <h1 className="font-logo bg-[#262626] px-2 my-1 rounded text-white text-center">Telefone</h1>
                             <p className="text-center">{data.phone}</p>
+                        </div>
+                        <div className="bg-[#F0F0F0] px-2 rounded">
+                            <h1 className="font-logo bg-[#262626] px-2 my-1 rounded text-white text-center">Tipo de Usuário</h1>
+                            <p className="text-center">{typeOfUserToLowerCase}</p>
                         </div>
                     </div>
 

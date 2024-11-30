@@ -5,7 +5,14 @@ import ErrorPage from './pages/Error';
 import RootLayout from './pages/Root';
 import Home from './pages/Home';
 
+// Users
 import CreateAccount from './pages/CreateAccount'
+import Login, { action as authAction} from "./pages/Login";
+import { action as logoutAction } from './pages/Logout';
+
+
+import { globalLoader, checkAuthLoader } from './util/auth';
+import EditUser from "./pages/EditUser";
 import Users, {loader as usersLoader} from './pages/Users';
 import UserDetail, {
   loader as userDetailLoader,
@@ -14,10 +21,16 @@ import UserDetail, {
 import { action as manipulateUserAction } from './components/UserForm'; 
 
 
+// Books
 import CreateBook from './pages/CreateBook';
+import EditBook from './pages/EditBook';
 import { action as manipulateBookAction } from './components/BookForm';
 import Books, {loader as booksLoader} from './pages/Books';
 
+import BookDetail, { 
+  loader as bookDetailLoader,
+  action as bookAction
+} from './pages/BookDetail';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +38,7 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     id: 'root',
+    loader: globalLoader,
     children : [
       {index: true, element: <Home />},
       {
@@ -38,15 +52,29 @@ const router = createBrowserRouter([
             loader: userDetailLoader,
             children: [
               {index: true, element: <UserDetail />, action: deleteUserAction},
+              {path: 'edit', element: <EditUser />, loader: checkAuthLoader, action: manipulateUserAction}
             ]
           }
         ]
       },
+      {path: 'login', element: <Login />, action: authAction},
+      {path: 'logout', action: logoutAction},
       {
         path: 'books',
         children: [
           {index: true, element: <Books />, loader: booksLoader},
-          {path: 'new', element: <CreateBook />, action: manipulateBookAction}
+          {path: 'new', element: <CreateBook />, action: manipulateBookAction},
+          {
+            path: ':bookId',
+            id: 'book-detail',
+            loader: bookDetailLoader,
+            children: [
+              {index: true, element: <BookDetail />, action: bookAction},
+              {path: 'edit', element: <EditBook />, loader: checkAuthLoader, action: manipulateBookAction},
+              // {path: 'newreservation', element: <CreateReservation />, action: createReservationAction},
+            ]
+          },
+
         ]
       }
     ]
