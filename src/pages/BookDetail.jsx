@@ -95,27 +95,29 @@ export async function loader({params}){
 }
 
 export async function action({params, request}) {
-    const bookId = params.placeId;
+    const bookId = params.bookId;
     const { typeOfUser, token } = globalLoader();
 
-    if(typeOfUser != "ADMINISTRADOR" || typeOfUser != "PROFESSOR" ){
-        redirect('/books')
+    if(typeOfUser !== "ADMINISTRADOR" && typeOfUser !== "PROFESSOR" ){
+        return redirect('/books')
     }
 
     const response = await fetch('http://localhost:8080/books/' + bookId, {
         method: request.method,
         headers: {
             'Content-Type' : 'application/json',
-            'Authorization' : `Bearer ${token}`
+            'Authorization': 'Bearer ' + token,
         }
     });
 
     if(!response.ok){
+        const responseData = await response.json();
+        console.log('Erro ao tentar deletar livro!', responseData);
         throw json(
-          { message: 'Erro ao tentar deletar livro!'}, 
-          {
+            { message: responseData.message ||  'Erro ao tentar deletar livro!'}, 
+            {
             status: 500
-          }
+            }
         );
     }
     return redirect('/books');
