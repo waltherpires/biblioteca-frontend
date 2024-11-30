@@ -30,10 +30,12 @@ export default function Table({ columns, data = [], filter = ""}){
                   </th>
                 )  
               )}
-              <th className="px-1 sm:px-2 md:px-4 py-4 text-xs sm:text-sm md:text-base text-center border-b border-r border-slate-300 bg-[#F0F0F0]"
-              >
-                Ações
-              </th>
+              {filteredData.length > 0 &&
+                <th className="px-1 sm:px-2 md:px-4 py-4 text-xs sm:text-sm md:text-base text-center border-b border-r border-slate-300 bg-[#F0F0F0]"
+                >
+                  Ações
+                </th>
+              }
             </tr>
         </thead>
         <tbody className="bg-[#F0F0F0]">

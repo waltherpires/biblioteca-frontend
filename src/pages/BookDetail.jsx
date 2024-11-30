@@ -15,13 +15,6 @@ export default function BookDetail(){
     const submit = useSubmit();
     const data = useRouteLoaderData('book-detail');
 
-    function startDeleteHandler(){
-        const proceed = window.confirm("Tem certeza de que deseja deletar este livro?");
-
-        if(proceed){
-            submit(null, { method: 'delete'});
-        }
-    }
 
     return (
         <div className="flex justify-center mt-2 items-center min-h-screen">
@@ -43,8 +36,8 @@ export default function BookDetail(){
                             <p className="text-center">
                             {
                                 data.rents && data.rents.length > 0 
-                                ? (data.rents[0].isReturned === true ? 'SIM' : 'NÃO') 
-                                : 'SIM'
+                                ? (data.rents[0].isReturned === true ? 'Sim' : 'Não') 
+                                : 'Sim'
                             }
                             </p>
                         </div>
@@ -55,18 +48,23 @@ export default function BookDetail(){
                         <div className="flex flex-col md:flex-row gap-2 items-center">
                             <Link className="bg-yellow-500 hover:bg-yellow-700 text-white w-16 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" to="edit" relative="path">Editar</Link>
                             {/* Fazer */}
-                            <button className="bg-red-500 hover:bg-red-700 text-white w-16 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" onClick={startDeleteHandler}>Excluir</button>
+                            <button className="bg-red-500 hover:bg-red-700 text-white w-16 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" onClick={() => submit({ actionType: 'delete' }, { method: 'post' })}>Excluir</button>
                         </div>
                     }
                     {typeOfUser == "USUARIO" &&
                         <div className="flex flex-col md:flex-row gap-2 items-center">
-                             <Link className="bg-blue-500 hover:bg-blue-700 text-white max-w-25 min-w-20 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" to="newreservation">Reservar Livro</Link>
+                            <button
+                                className="bg-blue-500 hover:bg-blue-700 text-white min-w-20 p-2 text-center text-xs sm:text-sm md:text-base font-bold rounded"
+                                onClick={() => submit({ actionType: 'reserve' }, { method: 'post' })}
+                            >
+                                Entrar na Fila
+                            </button>
                         </div>
                     }
 
                     {
                         <div className="flex flex-col md:flex-row gap-2 items-center">
-                            <Link className="bg-gray-500 hover:bg-gray-700 text-white max-w-25 min-w-20 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" to="reservations">Ver Reservas</Link>
+                            <Link className="bg-gray-500 hover:bg-gray-700 text-white min-w-20 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" to="reservations">Ver Reservas</Link>
                         </div>
                     }
 
@@ -96,31 +94,63 @@ export async function loader({params}){
 
 export async function action({params, request}) {
     const bookId = params.bookId;
-    const { typeOfUser, token } = globalLoader();
+    const { typeOfUser, token, loggedUserId } = globalLoader();
 
-    if(typeOfUser !== "ADMINISTRADOR" && typeOfUser !== "PROFESSOR" ){
-        return redirect('/books')
-    }
+    const method = request.method;
+    const formData = await request.formData();
+    const actionType = formData.get('actionType');
 
-    const response = await fetch('http://localhost:8080/books/' + bookId, {
-        method: request.method,
-        headers: {
-            'Content-Type' : 'application/json',
-            'Authorization': 'Bearer ' + token,
+    if(actionType === 'delete'){
+        if(typeOfUser !== "ADMINISTRADOR" && typeOfUser !== "PROFESSOR" ){
+            return redirect('/books')
         }
-    });
-
-    if(!response.ok){
-        const responseData = await response.json();
-        console.log('Erro ao tentar deletar livro!', responseData);
-        throw json(
-            { message: responseData.message ||  'Erro ao tentar deletar livro!'}, 
-            {
-            status: 500
+        
+        const response = await fetch('http://localhost:8080/books/' + bookId, {
+            method: request.method,
+            headers: {
+                'Content-Type' : 'application/json',
+                'Authorization': 'Bearer ' + token,
             }
-        );
+        });
+    
+        if(!response.ok){
+            const responseData = await response.json();
+            console.log('Erro ao tentar deletar livro!', responseData);
+            throw json(
+                { message: responseData.message ||  'Erro ao tentar deletar livro!'}, 
+                {
+                status: 500
+                }
+            );
+        }
+        return redirect('/books');
     }
-    return redirect('/books');
+
+    if (actionType === 'reserve') {
+        const response = await fetch(`http://localhost:8080/books/${bookId}/rents/${loggedUserId}/reserve`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const responseData = await response.json();
+            console.log('Erro ao tentar entrar na fila!', responseData);
+            throw json(
+                { message: responseData.message || 'Erro ao tentar entrar na fila!' },
+                { status: 500 }
+            );
+        }
+        return redirect(`/books/${bookId}`);
+    }
+
+    throw json(
+        { message: 'Ação não suportada!' },
+        { status: 400 }
+    );
+
 }
 
 

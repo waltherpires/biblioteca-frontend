@@ -20,6 +20,8 @@ import UserDetail, {
 } from './pages/UserDetail';
 import { action as manipulateUserAction } from './components/UserForm'; 
 
+import Messages, { loader as messageLoader } from './pages/Messages';
+
 
 // Books
 import CreateBook from './pages/CreateBook';
@@ -31,6 +33,9 @@ import BookDetail, {
   loader as bookDetailLoader,
   action as bookAction
 } from './pages/BookDetail';
+
+// Reservas
+import Reservations, {loader as loaderReservations} from './pages/Reservations';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +57,7 @@ const router = createBrowserRouter([
             loader: userDetailLoader,
             children: [
               {index: true, element: <UserDetail />, action: deleteUserAction},
+              {path: 'messages', element: <Messages />, loader: messageLoader},
               {path: 'edit', element: <EditUser />, loader: checkAuthLoader, action: manipulateUserAction}
             ]
           }
@@ -71,7 +77,7 @@ const router = createBrowserRouter([
             children: [
               {index: true, element: <BookDetail />, action: bookAction},
               {path: 'edit', element: <EditBook />, loader: checkAuthLoader, action: manipulateBookAction},
-              // {path: 'newreservation', element: <CreateReservation />, action: createReservationAction},
+              {path: 'reservations', element: <Reservations />, loader: loaderReservations},
             ]
           },
 

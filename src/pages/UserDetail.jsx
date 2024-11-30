@@ -54,8 +54,9 @@ export default function UserDetail(){
 
                     {/* Botoes */}
                     <div className="flex flex-col md:flex-row gap-2 items-center">
-                        <Link className="bg-yellow-500 hover:bg-yellow-700 text-white w-16 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" to="edit" relative="path">Editar</Link>
-                        <button className="bg-red-500 hover:bg-red-700 text-white w-16 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" onClick={startDeleteHandler}>Excluir</button>
+                        <Link className="bg-blue-500 hover:bg-blue-700 text-white min-h-4w-16 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" to="messages" relative="path">Mensagens</Link>
+                        <Link className="bg-yellow-500 hover:bg-yellow-700 text-white min-w-16 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" to="edit" relative="path">Editar</Link>
+                        <button className="bg-red-500 hover:bg-red-700 text-white min-w-16 p-2 text-center text-xs sm:text-sm md:text-base font-bold  rounded" onClick={startDeleteHandler}>Excluir</button>
                     </div>
                 </div>
             </Container>
