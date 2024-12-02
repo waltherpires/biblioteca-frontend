@@ -15,6 +15,7 @@ export default function BookDetail(){
     const submit = useSubmit();
     const data = useRouteLoaderData('book-detail');
 
+    console.log(data);
 
     return (
         <div className="flex justify-center mt-2 items-center min-h-screen">
@@ -34,11 +35,7 @@ export default function BookDetail(){
                         <div className="bg-[#F0F0F0] px-2 rounded">
                             <h1 className="font-logo bg-[#262626] px-2 my-1 rounded text-white text-center">Disponível</h1>
                             <p className="text-center">
-                            {
-                                data.rents && data.rents.length > 0 
-                                ? (data.rents[0].isReturned === true ? 'Sim' : 'Não') 
-                                : 'Sim'
-                            }
+                            {data.status}
                             </p>
                         </div>
                     </div>
