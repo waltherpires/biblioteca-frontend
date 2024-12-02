@@ -12,7 +12,9 @@ export default function Reservations(){
     const initialData = useLoaderData();
     const [data, setData] = useState(initialData);
 
-    const hasActions = data.some(rent => rent.returnDate === null && rent.user.id !== loggedUserId);
+    console.log(data);
+
+    const hasActions = data.some(rent => rent.returnDate === null && rent.user.id == loggedUserId);
 
     const transformedData = data.map(rent => ({
         rentDate: rent.rentDate || "Não definida",
@@ -21,7 +23,7 @@ export default function Reservations(){
         returnDate: rent.returnDate || "Não devolvido",
         user: rent.user.name,
         bookId: rent.book.id,
-        actions: rent.returnDate === null && rent.user.id !== loggedUserId ? (
+        actions: rent.returned === false && rent.user.id == loggedUserId ? (
             (
                 rent.rentDate === null ? (
                     <button
@@ -87,6 +89,7 @@ export default function Reservations(){
                     return {
                         ...rent,
                         rentDate: method === "POST" ? new Date().toISOString().substring(0, 10) : rent.rentDate,
+                        dueDate: method === "POST" ? new Date(new Date().setDate(new Date().getDate() + 14)).toISOString().substring(0, 10) : rent.dueDate,
                         returnDate: method === "PATCH" ? new Date().toISOString().substring(0, 10) : rent.returnDate,
                         returned: method === "PATCH" ? true : rent.returned
                     };
@@ -131,7 +134,7 @@ export async function loader({params}) {
     
 
 
-    const data = response.json();
+    const data = await response.json();
     return data;
 }
 
